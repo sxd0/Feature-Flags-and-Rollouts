@@ -1,4 +1,4 @@
-.PHONY: install fmt lint type test pretty pretty-validate run up down logs db alembic-rev alembic-up
+.PHONY: install fmt lint type test pretty pretty-validate run up down logs db alembic-rev alembic-up run-control run-data
 
 install:
 	poetry install
@@ -46,3 +46,8 @@ alembic-rev:
 alembic-up:
 	PYTHONPATH=. poetry run alembic upgrade head
 
+run-control:
+	poetry run uvicorn services.control_api.src.control_api.main:app --reload --port 8000
+
+run-data:
+	poetry run uvicorn services.data_plane.src.data_plane.main:app --reload --port 8001

@@ -1,10 +1,8 @@
 from fastapi import FastAPI
+from services.data_plane.src.data_plane.api.router import router
 
-from services.control_api.src.control_api.api.router import router
-
-app = FastAPI(title="Control API", version="0.1.0")
+app = FastAPI(title="Data Plane", version="0.1.0")
 app.include_router(router)
-
 
 @app.get("/health")
 async def health() -> dict:

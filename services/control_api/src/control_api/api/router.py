@@ -4,10 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from services.control_api.src.control_api.db import get_db_session
-from services.control_api.src.control_api.evaluate import is_in_rollout
-from services.control_api.src.control_api.models import Environment, FeatureFlag, FeatureFlagState
-from services.control_api.src.control_api.schemas import (
+from services.control_api.src.control_api.core.db import get_db_session
+from services.control_api.src.control_api.services.evaluate import is_in_rollout
+from services.control_api.src.control_api.domain.models import Environment, FeatureFlag, FeatureFlagState
+from services.control_api.src.control_api.domain.schemas import (
     EnvCreate,
     EnvOut,
     EvaluateResponse,
