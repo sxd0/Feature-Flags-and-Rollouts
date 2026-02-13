@@ -1,4 +1,4 @@
-.PHONY: install fmt lint type test run up down logs alembic-rev alembic-up
+.PHONY: install fmt lint type test pretty pretty-validate run up down logs db alembic-rev alembic-up
 
 install:
 	poetry install
@@ -15,6 +15,16 @@ type:
 test:
 	poetry run pytest --disable-warnings -v -s
 
+pretty:
+	poetry run ruff format .
+	poetry run ruff check .
+	poetry run mypy services libs tests
+
+pretty-validate:
+	poetry run ruff format .
+	poetry run ruff check --fix
+	poetry run mypy services libs tests
+
 run:
 	poetry run uvicorn services.control_api.src.control_api.main:app --reload --port 8000
 
@@ -27,9 +37,12 @@ down:
 logs:
 	docker-compose -f deploy/compose/docker-compose.yml logs -f
 
+db:
+	docker-compose -f deploy/compose/docker-compose.yml exec postgres psql -U postgres -d ff
+
 alembic-rev:
-	PYTHONPATH=. poetry run alembic -c services/control_api/alembic.ini revision --autogenerate -m "$(m)"
+	PYTHONPATH=. poetry run alembic revision --autogenerate -m "$(m)"
 
 alembic-up:
-	PYTHONPATH=. poetry run alembic -c services/control_api/alembic.ini upgrade head
+	PYTHONPATH=. poetry run alembic upgrade head
 
