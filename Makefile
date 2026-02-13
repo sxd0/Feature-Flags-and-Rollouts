@@ -1,4 +1,4 @@
-.PHONY: install fmt lint type test run up down logs
+.PHONY: install fmt lint type test run up down logs alembic-rev alembic-up
 
 install:
 	poetry install
@@ -26,3 +26,10 @@ down:
 
 logs:
 	docker-compose -f deploy/compose/docker-compose.yml logs -f
+
+alembic-rev:
+	PYTHONPATH=. poetry run alembic -c services/control_api/alembic.ini revision --autogenerate -m "$(m)"
+
+alembic-up:
+	PYTHONPATH=. poetry run alembic -c services/control_api/alembic.ini upgrade head
+
