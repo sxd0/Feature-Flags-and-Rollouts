@@ -21,7 +21,8 @@ dependencies = [
     "asyncpg (>=0.31.0,<0.32.0)",
     "alembic (>=1.18.4,<2.0.0)",
     "psycopg[binary] (>=3.3.2,<4.0.0)",
-    "greenlet (>=3.3.1,<4.0.0)"
+    "greenlet (>=3.3.1,<4.0.0)",
+    "redis (>=7.1.1,<8.0.0)"
 ]
 
 [tool.poetry]
@@ -37,7 +38,7 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
-ignore = ["E501"]
+ignore = ["E501", "B008"]
 
 [tool.mypy]
 python_version = "3.12"

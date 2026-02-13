@@ -5,8 +5,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from services.control_api.src.control_api.core.db import get_db_session
-from services.control_api.src.control_api.services.evaluate import is_in_rollout
-from services.control_api.src.control_api.domain.models import Environment, FeatureFlag, FeatureFlagState
+from services.control_api.src.control_api.domain.models import (
+    Environment,
+    FeatureFlag,
+    FeatureFlagState,
+)
 from services.control_api.src.control_api.domain.schemas import (
     EnvCreate,
     EnvOut,
@@ -15,6 +18,7 @@ from services.control_api.src.control_api.domain.schemas import (
     FlagOut,
     FlagStateUpsert,
 )
+from services.control_api.src.control_api.services.evaluate import is_in_rollout
 
 router = APIRouter(prefix="/v1")
 
@@ -28,13 +32,13 @@ async def create_env(payload: EnvCreate, db: AsyncSession = Depends(get_db_sessi
     db.add(env)
     await db.commit()
     await db.refresh(env)
-    return env
+    return EnvOut.model_validate(env)
 
 
 @router.get("/envs", response_model=list[EnvOut])
 async def list_envs(db: AsyncSession = Depends(get_db_session)) -> list[EnvOut]:
     rows = (await db.scalars(select(Environment).order_by(Environment.id))).all()
-    return list(rows)
+    return [EnvOut.model_validate(x) for x in rows]
 
 
 @router.post("/flags", response_model=FlagOut)
@@ -46,13 +50,13 @@ async def create_flag(payload: FlagCreate, db: AsyncSession = Depends(get_db_ses
     db.add(flag)
     await db.commit()
     await db.refresh(flag)
-    return flag
+    return FlagOut.model_validate(flag)
 
 
 @router.get("/flags", response_model=list[FlagOut])
 async def list_flags(db: AsyncSession = Depends(get_db_session)) -> list[FlagOut]:
     rows = (await db.scalars(select(FeatureFlag).order_by(FeatureFlag.id))).all()
-    return list(rows)
+    return [FlagOut.model_validate(x) for x in rows]
 
 
 @router.put("/flags/{flag_key}/state/{env_name}")

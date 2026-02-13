@@ -15,5 +15,16 @@ services:
     volumes:
       - ff_pg_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+
 volumes:
   ff_pg_data:
